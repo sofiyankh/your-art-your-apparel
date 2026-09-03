@@ -5,10 +5,7 @@ import { useCartStore, cartCount } from "@/stores/cartStore";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 
-const NAV = [
-  { to: "/shop", label: "Shop" },
-  { to: "/about", label: "The shop" },
-];
+const NAV = [{ to: "/shop", label: "Shop" }] as const;
 
 export function SiteLayout({ children }: { children: ReactNode }) {
   const lines = useCartStore((s) => s.lines);
