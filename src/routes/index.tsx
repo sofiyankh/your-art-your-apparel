@@ -1,24 +1,149 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { ArrowRight } from "lucide-react";
+import { SiteLayout } from "@/components/site/SiteLayout";
+import { GarmentViewer } from "@/components/garment/GarmentViewer";
+import { productsQuery } from "@/lib/queries";
+import { currency } from "@/lib/format";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title: "Pressworks — Print what you make" },
+      {
+        name: "description",
+        content:
+          "A small screen-printing shop. Upload your artwork, place it on a heavyweight blank in 3D, and we press it to order.",
+      },
+      { property: "og:title", content: "Pressworks — Print what you make" },
+      {
+        property: "og:description",
+        content: "Upload your artwork, place it in 3D, and we press it to order.",
+      },
+    ],
+  }),
+  component: Home,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+const STEPS = [
+  {
+    n: "01",
+    title: "Pick a blank",
+    body: "Heavyweight tees and brushed fleece hoodies, in five shop colours.",
+  },
+  {
+    n: "02",
+    title: "Place your art",
+    body: "Drop in a file and move it around the garment in 3D until it sits right.",
+  },
+  {
+    n: "03",
+    title: "We press it",
+    body: "Water-based inks, pressed to order in the shop. Nothing sits in a warehouse.",
+  },
+];
+
+function Home() {
+  const { data: products } = useQuery(productsQuery());
+  const featured = (products ?? []).slice(0, 3);
+
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <SiteLayout>
+      {/* Asymmetric hero: copy left, live garment right */}
+      <section className="rule-b">
+        <div className="mx-auto grid w-full max-w-[1240px] items-center gap-10 px-5 py-16 lg:grid-cols-[minmax(0,38%)_minmax(0,62%)] lg:py-24">
+          <div>
+            <h1 className="font-display text-6xl font-bold leading-[0.92] sm:text-7xl">
+              Print what
+              <br />
+              you make<span className="text-primary">.</span>
+            </h1>
+            <p className="mt-6 max-w-md text-base leading-relaxed text-foreground/80">
+              Bring a drawing, a photograph, a logo you sketched at 2am. Place it on the garment
+              yourself, then we press it in the shop — one at a time, on blanks worth keeping.
+            </p>
+            <Link
+              to="/shop"
+              className="mt-8 inline-flex items-center gap-2 bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            >
+              Start designing
+              <ArrowRight className="size-4" strokeWidth={1.8} />
+            </Link>
+            <dl className="rule-t mt-12 grid grid-cols-3 gap-4 pt-6 text-sm">
+              <div>
+                <dt className="text-muted-foreground">Blanks</dt>
+                <dd className="font-display text-2xl font-bold">240gsm</dd>
+              </div>
+              <div>
+                <dt className="text-muted-foreground">Inks</dt>
+                <dd className="font-display text-2xl font-bold">Water-based</dd>
+              </div>
+              <div>
+                <dt className="text-muted-foreground">Pressed in</dt>
+                <dd className="font-display text-2xl font-bold">3 days</dd>
+              </div>
+            </dl>
+          </div>
+          <div className="canvas-weave relative h-[380px] border border-foreground/20 bg-card sm:h-[520px]">
+            <GarmentViewer
+              className="size-full"
+              category="tshirt"
+              color="#F2EFE7"
+              controls={false}
+              spin
+            />
+            <p className="absolute bottom-4 left-4 text-xs text-muted-foreground">
+              Heavyweight Cotton Tee — natural canvas
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="rule-b">
+        <div className="mx-auto grid w-full max-w-[1240px] gap-8 px-5 py-14 sm:grid-cols-3">
+          {STEPS.map((step) => (
+            <div key={step.n} className="border-l border-foreground/20 pl-4">
+              <p className="font-display text-sm font-bold text-primary">{step.n}</p>
+              <h2 className="mt-1 font-display text-2xl font-bold">{step.title}</h2>
+              <p className="mt-2 text-sm leading-relaxed text-foreground/75">{step.body}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section>
+        <div className="mx-auto w-full max-w-[1240px] px-5 py-14">
+          <div className="flex flex-wrap items-baseline justify-between gap-3">
+            <h2 className="font-display text-3xl font-bold">Blanks we keep in stock</h2>
+            <Link to="/shop" className="text-sm text-primary hover:underline">
+              See all
+            </Link>
+          </div>
+          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {featured.map((product) => (
+              <article
+                key={product.id}
+                className="border border-foreground/20 bg-card p-5 text-sm leading-relaxed"
+              >
+                <h3 className="font-display text-xl font-bold">{product.name}</h3>
+                <p className="mt-2 text-foreground/75">{product.description}</p>
+                <p className="mt-4 flex items-center justify-between">
+                  <span className="font-display text-xl font-bold">
+                    {currency(Number(product.base_price))}
+                  </span>
+                  <Link
+                    to="/product/$id"
+                    params={{ id: product.id }}
+                    className="text-primary hover:underline"
+                  >
+                    Customize this
+                  </Link>
+                </p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+    </SiteLayout>
   );
 }
