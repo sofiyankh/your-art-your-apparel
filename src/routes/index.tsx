@@ -3,19 +3,19 @@ import { useQuery } from "@tanstack/react-query";
 import { ArrowRight } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { GarmentViewer } from "@/components/garment/GarmentViewer";
+import { ProductCard } from "@/components/site/ProductCard";
 import { productsQuery } from "@/lib/queries";
-import { currency } from "@/lib/format";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Pressworks — Print what you make" },
+      { title: "Pressworks — Custom garments made to order" },
       {
         name: "description",
         content:
           "A small screen-printing shop. Upload your artwork, place it on a heavyweight blank in 3D, and we press it to order.",
       },
-      { property: "og:title", content: "Pressworks — Print what you make" },
+      { property: "og:title", content: "Pressworks — Custom garments made to order" },
       {
         property: "og:description",
         content: "Upload your artwork, place it in 3D, and we press it to order.",
@@ -53,10 +53,13 @@ function Home() {
       <section className="rule-b">
         <div className="mx-auto grid w-full max-w-[1240px] items-center gap-10 px-5 py-16 lg:grid-cols-[minmax(0,38%)_minmax(0,62%)] lg:py-24">
           <div>
-            <h1 className="font-display text-6xl font-bold leading-[0.92] sm:text-7xl">
-              Print what
+            <p className="text-sm text-muted-foreground">Made to order</p>
+            <h1 className="mt-4 font-display text-5xl font-semibold leading-[1.02] sm:text-6xl">
+              Your art,
               <br />
-              you make<span className="text-primary">.</span>
+              on a garment
+              <br />
+              worth keeping.
             </h1>
             <p className="mt-6 max-w-md text-base leading-relaxed text-foreground/80">
               Bring a drawing, a photograph, a logo you sketched at 2am. Place it on the garment
@@ -84,7 +87,7 @@ function Home() {
               </div>
             </dl>
           </div>
-          <div className="canvas-weave relative h-[380px] border border-foreground/20 bg-card sm:h-[520px]">
+          <div className="relative h-[380px] border border-foreground/10 bg-card sm:h-[520px]">
             <GarmentViewer
               className="size-full"
               category="tshirt"
@@ -120,27 +123,7 @@ function Home() {
             </Link>
           </div>
           <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {featured.map((product) => (
-              <article
-                key={product.id}
-                className="border border-foreground/20 bg-card p-5 text-sm leading-relaxed"
-              >
-                <h3 className="font-display text-xl font-bold">{product.name}</h3>
-                <p className="mt-2 text-foreground/75">{product.description}</p>
-                <p className="mt-4 flex items-center justify-between">
-                  <span className="font-display text-xl font-bold">
-                    {currency(Number(product.base_price))}
-                  </span>
-                  <Link
-                    to="/product/$id"
-                    params={{ id: product.id }}
-                    className="text-primary hover:underline"
-                  >
-                    Customize this
-                  </Link>
-                </p>
-              </article>
-            ))}
+            {featured.map((product) => <ProductCard key={product.id} product={product} />)}
           </div>
         </div>
       </section>

@@ -17,9 +17,8 @@ export function SiteLayout({ children }: { children: ReactNode }) {
     <div className="flex min-h-screen flex-col bg-background">
       <header className="rule-b sticky top-0 z-40 bg-background/95 backdrop-blur">
         <div className="mx-auto flex h-16 w-full max-w-[1240px] items-center gap-8 px-5">
-          <Link to="/" className="font-display text-2xl font-bold leading-none tracking-tight">
+          <Link to="/" className="font-display text-xl font-semibold leading-none">
             Pressworks
-            <span className="text-primary">.</span>
           </Link>
           <nav className="hidden items-center gap-6 text-sm md:flex">
             {NAV.map((item) => (
@@ -41,7 +40,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
                 </Link>
                 <button
                   onClick={() => supabase.auth.signOut()}
-                  className="text-foreground/55 hover:text-rust"
+                  className="text-xs text-muted-foreground hover:text-foreground"
                 >
                   Sign out
                 </button>
@@ -58,7 +57,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
             )}
             <Link
               to="/cart"
-              className="flex items-center gap-2 border border-foreground/25 px-3 py-1.5 text-sm transition-colors hover:border-primary hover:text-primary"
+              className="flex items-center gap-2 border border-foreground/15 px-3 py-1.5 text-sm transition-colors hover:border-primary hover:text-primary"
             >
               <ShoppingBag className="size-4" strokeWidth={1.6} />
               <span>{count}</span>
@@ -74,8 +73,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
           <div>
             <p className="font-display text-xl font-bold">Pressworks</p>
             <p className="mt-2 max-w-xs text-sm text-muted-foreground">
-              A small print shop. Water-based inks, blanks we'd wear ourselves, and your artwork on
-              the front.
+              Water-based inks, blanks worth keeping, and your artwork on the front.
             </p>
           </div>
           <div className="text-sm">

@@ -60,10 +60,11 @@ export const designQuery = (id: string | null) =>
     queryKey: ["design", id],
     enabled: !!id,
     queryFn: async (): Promise<Design | null> => {
+      if (!id) return null;
       const { data, error } = await supabase
         .from("designs")
         .select("*")
-        .eq("id", id!)
+        .eq("id", id)
         .maybeSingle();
       if (error) throw error;
       return data;
