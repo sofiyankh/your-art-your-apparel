@@ -9,9 +9,9 @@ export function ProductCard({ product }: { product: Product }) {
     <Link
       to="/product/$id"
       params={{ id: product.id }}
-      className="group relative block border border-foreground/20 bg-card transition-colors hover:border-primary"
+      className="group relative block border border-foreground/10 bg-card transition-colors hover:border-primary/50"
     >
-      <div className="canvas-weave relative aspect-4/5 overflow-hidden bg-background">
+      <div className="relative aspect-4/5 overflow-hidden bg-background">
         <GarmentViewer
           className="size-full"
           category={product.category}
@@ -26,15 +26,15 @@ export function ProductCard({ product }: { product: Product }) {
       </div>
       <div className="rule-t flex items-baseline justify-between gap-3 px-4 py-3">
         <div>
-          <h3 className="font-display text-lg font-bold leading-tight group-hover:text-primary">
+          <h3 className="font-display text-base font-semibold leading-tight group-hover:text-primary">
             {product.name}
           </h3>
           <p className="text-xs text-muted-foreground">
             {product.category === "hoodie" ? "Hoodie" : "T-shirt"} ·{" "}
-            {product.available_colors.length} colors
+            {product.available_colors.length} colours
           </p>
         </div>
-        <p className="font-display text-lg font-bold">{currency(Number(product.base_price))}</p>
+        <p className="font-display text-base font-medium">{currency(Number(product.base_price))}</p>
       </div>
     </Link>
   );
