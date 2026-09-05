@@ -1,0 +1,15 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Minus, Plus, Trash2 } from "lucide-react";
+import { SiteLayout } from "@/components/site/SiteLayout";
+import { Button } from "@/components/ui/button";
+import { currency } from "@/lib/format";
+import { cartSubtotal, useCartStore } from "@/stores/cartStore";
+
+export const Route = createFileRoute("/cart")({
+  head: () => ({ meta: [
+    { title: "Your cart — Pressworks" }, { name: "description", content: "Review your custom garments before checkout." },
+    { property: "og:title", content: "Your cart — Pressworks" }, { property: "og:description", content: "Review your custom garments before checkout." },
+    { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" },
+  ] }), component: Cart,
+});
+function Cart(){const lines=useCartStore(s=>s.lines);const setQuantity=useCartStore(s=>s.setQuantity);const remove=useCartStore(s=>s.remove);return <SiteLayout><section className="mx-auto max-w-[980px] px-5 py-14"><h1 className="text-4xl font-semibold">Your cart</h1>{lines.length===0?<div className="mt-12 border-y border-border py-12"><p className="text-muted-foreground">Your cart is empty.</p><Button asChild className="mt-5"><Link to="/shop">Choose a garment</Link></Button></div>:<div className="mt-10 grid gap-10 lg:grid-cols-[1fr_300px]"><div>{lines.map(line=><article key={line.key} className="flex gap-5 border-t border-border py-6"><div className="flex size-28 items-center justify-center bg-card">{line.previewUrl?<img src={line.previewUrl} alt="Design preview" className="size-full object-contain"/>:<span className="text-xs text-muted-foreground">Blank</span>}</div><div className="flex-1"><h2 className="font-medium">{line.productName}</h2><p className="mt-1 text-sm text-muted-foreground">{line.size} · {line.color}</p>{line.designId?<Link to="/customize/$productId" params={{productId:line.productId}} search={{design:line.designId}} className="mt-3 inline-block text-sm text-primary hover:underline">Edit design</Link>:null}<div className="mt-5 flex items-center gap-3"><Button size="icon" variant="outline" aria-label="Decrease quantity" onClick={()=>setQuantity(line.key,line.quantity-1)}><Minus/></Button><span className="w-5 text-center text-sm">{line.quantity}</span><Button size="icon" variant="outline" aria-label="Increase quantity" onClick={()=>setQuantity(line.key,line.quantity+1)}><Plus/></Button><Button size="icon" variant="ghost" aria-label="Remove item" onClick={()=>remove(line.key)}><Trash2/></Button></div></div><p className="font-medium">{currency(line.unitPrice*line.quantity)}</p></article>)}</div><aside className="border-t border-border pt-6"><div className="flex justify-between"><span>Subtotal</span><strong>{currency(cartSubtotal(lines))}</strong></div><p className="mt-2 text-xs text-muted-foreground">Shipping is calculated at payment.</p><Button asChild className="mt-6 w-full"><Link to="/checkout">Continue to checkout</Link></Button></aside></div>}</section></SiteLayout>}
